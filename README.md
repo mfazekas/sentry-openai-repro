@@ -73,8 +73,15 @@ The issue was introduced in v9.40.0.
 
 - Node.js: v22.16.0
 - @sentry/node: 9.43.0 (issue present)
-- openai: ^4.93.0
+- openai: ^4.93.0 and ^5.10.2 (both affected)
 - typescript: ~5.8.3
+
+### OpenAI SDK Version Compatibility
+
+The issue affects both OpenAI SDK v4 and v5:
+- ❌ openai@^4.93.0 with Sentry v9.40+ = TypeError: import_openai.default is not a constructor
+- ❌ openai@^5.10.2 with Sentry v9.40+ = TypeError: import_openai.default is not a constructor
+- ✅ Both OpenAI v4 and v5 work fine with Sentry v9.39.0 or earlier
 
 ### Similar GitHub Issues
 
