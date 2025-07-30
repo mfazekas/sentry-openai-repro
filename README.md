@@ -29,16 +29,18 @@ npm test
 
 ### 1. The Issue Occurs When:
 
-- Sentry is initialized with `tracesSampler` configured
+- Sentry is initialized with EITHER:
+  - `tracesSampler` configured, OR
+  - `openAIIntegration` configured (new in v9.40+)
 - Sentry initialization happens in a separate file that is imported
 - OpenAI is imported after the Sentry import
 - Using Sentry v9.40.0 or later (including v9.43.0)
 
 ### 2. The Issue Does NOT Occur When:
 
-- `tracesSampler` is not configured (commented out)
+- Neither `tracesSampler` nor `openAIIntegration` is configured
 - Both Sentry and OpenAI are imported in the same file
-- Using Sentry v9.39.0 or earlier
+- Using Sentry v9.39.0 or earlier (where `openAIIntegration` doesn't exist)
 - Using Sentry v8.x (tested with v8.38.0)
 
 ### 3. `registerEsmLoaderHooks: false` Does NOT Fix the Issue
@@ -61,10 +63,20 @@ The issue was introduced in v9.40.0.
 - `index.ts` - Main entry point that imports Sentry and then OpenAI
 - `sentry.ts` - Sentry initialization with tracesSampler
 
+## Test Scenarios
+
+Run `tsx test-scenarios.ts` to see all test scenarios and their results.
+
+### What Triggers the Issue in v9.40+:
+1. ❌ `tracesSampler: () => 1.0` - Causes the import error
+2. ❌ `integrations: [Sentry.openAIIntegration()]` - Also causes the import error
+3. ❌ Both together - Same error
+4. ✅ Neither - Works correctly
+
 ## Workarounds
 
-1. **Remove `tracesSampler`**: Comment out or remove the `tracesSampler` configuration
-2. **Use `tracesSampleRate`**: Use a static sampling rate instead of a function
+1. **Remove problematic configs**: Don't use `tracesSampler` or `openAIIntegration`
+2. **Use `tracesSampleRate`**: Use a static sampling rate instead of `tracesSampler`
 3. **Initialize Sentry after OpenAI import**: Import OpenAI before initializing Sentry
 4. **Downgrade Sentry**: Use @sentry/node v9.39.0 or earlier
 5. **Use same file**: Initialize Sentry and import OpenAI in the same file

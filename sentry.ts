@@ -8,6 +8,13 @@ Sentry.init({
     // Always sample for this test
     return 1.0
   },
+  // Uncommenting the below ALSO causes the same error:
+  // integrations: [
+  //   Sentry.openAIIntegration({
+  //     recordInputs: true,
+  //     recordOutputs: true,
+  //   }),
+  // ],
 })
 
 export default Sentry
